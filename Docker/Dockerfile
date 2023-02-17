@@ -2,12 +2,12 @@ FROM node:16.19-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY ./package.json ./package.json /app/
 
 RUN npm install
 
-COPY . .
+COPY ./ /app
 
 EXPOSE 5000
 
-CMD [ "node", "app.js" ]
+CMD [ "node", "./app.js" ]
