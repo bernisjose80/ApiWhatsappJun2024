@@ -18,6 +18,8 @@ jobs:
       - name: Install dependencies
         uses: npm install --no-audit --no-fund --no-optional
       - name: Lint
-        uses: npm run eslint
+        run: npm run eslint
       - name: Build
         run: npm run build 
+      - name: Test
+        run: npm test
