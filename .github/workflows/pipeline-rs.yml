@@ -1,0 +1,25 @@
+name: Deploy RS for BotWhatsapp
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        uses: npm install --no-audit --no-fund --no-optional
+      - name: Lint
+        uses: npm run eslint
+      - name: Build
+        run: npm run build 
+      - name: Test
+        run: npm test 
