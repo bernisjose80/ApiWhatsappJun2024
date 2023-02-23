@@ -9,14 +9,14 @@ let record_id = 0;
 let ad_table_id = 0;
 let ad_org_id = 0;
 let user1_id = 0;
-
 let ad_wf_activity_id = 0;
 let ad_client_id = 0;
 let documentno =' ';
 let user =' '; 
 let c_costo =' ';
 let description =' ';
-let monto_base= 0;
+let monto_base=' ';
+let moneda =' ';
 
 
 const app = express();
@@ -323,7 +323,7 @@ async function Listening(){
     const client = await getConnection();
 
     const rta =
-      await client.query(`SELECT oc.c_order_id As DocT,oc.documentno,oc.created, oc.user1_id, awfp.ad_wf_process_id, awfa.ad_wf_activity_id, awfa.ad_table_id, awfp.record_id, awfp.processed, awfa.ad_wf_responsible_id, au.name AS user, au.email, au.phone,oc.ad_client_id,oc.ad_org_id,oc.createdby, oc.isapproved as Aprobada, oc.docstatus AS Status,oc.totallines AS monto,oc.description, cc.name AS ccosto
+      await client.query(`SELECT oc.c_order_id As DocT,oc.documentno,oc.created, oc.user1_id, awfp.ad_wf_process_id, awfa.ad_wf_activity_id, awfa.ad_table_id, awfp.record_id, awfp.processed, awfa.ad_wf_responsible_id, au.name AS user, au.email, au.phone,oc.ad_client_id,oc.ad_org_id,oc.createdby, oc.isapproved as Aprobada, oc.docstatus AS Status,oc.totallines AS monto,oc.description, cc.name AS ccosto, ccu.iso_code as moneda
 
   FROM ad_wf_process  AS awfp 
   JOIN ad_wf_activity AS awfa ON awfa.ad_wf_process_id = awfp.ad_wf_process_id
@@ -331,6 +331,7 @@ async function Listening(){
   JOIN ad_user        AS au   ON au.ad_user_id = awfa.ad_user_id
   JOIN c_order        AS oc   ON awfp.record_id = oc.c_order_id
   join c_elementvalue as cc on oc.user1_id=cc.c_elementvalue_id
+  JOIN c_currency as ccu on oc.c_currency_id = ccu.c_currency_id
   WHERE awfp.wfstate= '${WfState}'
   and awfa.wfstate= '${WfState}'
   and awfa.processed = '${processed}'
@@ -340,7 +341,7 @@ async function Listening(){
 
   UNION
 
-  SELECT req.m_requisition_id As DocT,req.documentno,req.created, req.user1_id, awfp.ad_wf_process_id, awfa.ad_wf_activity_id, awfa.ad_table_id, awfp.record_id, awfp.processed, awfa.ad_wf_responsible_id, au.name AS user, au.email, au.phone,req.ad_client_id,req.ad_org_id,req.createdby, req.isapproved as Aprobada, req.docstatus AS Status,req.totallines AS monto,req.description, cc.name AS ccosto
+  SELECT req.m_requisition_id As DocT,req.documentno,req.created, req.user1_id, awfp.ad_wf_process_id, awfa.ad_wf_activity_id, awfa.ad_table_id, awfp.record_id, awfp.processed, awfa.ad_wf_responsible_id, au.name AS user, au.email, au.phone,req.ad_client_id,req.ad_org_id,req.createdby, req.isapproved as Aprobada, req.docstatus AS Status,req.totallines AS monto,req.description, cc.name AS ccosto, ccu.iso_code as moneda
 
   FROM ad_wf_process  AS awfp 
   JOIN ad_wf_activity AS awfa ON awfa.ad_wf_process_id = awfp.ad_wf_process_id
@@ -348,6 +349,7 @@ async function Listening(){
   JOIN ad_user        AS au   ON au.ad_user_id = awfa.ad_user_id
   JOIN m_requisition        AS req   ON awfp.record_id = req.m_requisition_id
   join c_elementvalue as cc on req.user1_id=cc.c_elementvalue_id
+  JOIN c_currency as ccu on req.c_currency_id = ccu.c_currency_id
   WHERE awfp.wfstate= '${WfState}'
   and awfa.wfstate= '${WfState}'
   and awfa.processed = '${processed}'
@@ -374,8 +376,9 @@ async function Listening(){
           documentno = rta.rows[i].documentno;
           user = rta.rows[i].user;
           c_costo = rta.rows[i].ccosto;
-          monto_base = (rta.rows[i].monto).toString();
-          description = rta.rows[i].description;
+          monto_base = (rta.rows[i].monto).toString() || '0';
+          description = rta.rows[i].description || ' ' ;
+          moneda = rta.rows[i].moneda; 
 
           SendOn = await SelectBd(record_id, ad_wf_activity_id);
           console.log(SendOn);
@@ -387,8 +390,8 @@ async function Listening(){
             console.log(documentno);
             console.log(user);
             console.log(c_costo);
+            monto_base = (new Intl.NumberFormat().format(monto_base));
 
-            console.log(monto_base);
             callSendApi(
               rta.rows[i].phone,
               record_id,
@@ -401,7 +404,8 @@ async function Listening(){
               user,
               c_costo,
               monto_base,
-              description
+              description,
+              moneda
             );
           }
         }
@@ -421,7 +425,7 @@ async function Listening(){
 
 
 
-function callSendApi(NroPhone,NroReq,NroUser,NroAct,NroTab,NroOrg,NroClient,DocNo,NamU,Ccosto) {  
+function callSendApi(NroPhone,NroReq,NroUser,NroAct,NroTab,NroOrg,NroClient,DocNo,NamU,Ccosto,Amount,Descr,Moneda) {  
    
    
    var options = {
@@ -458,11 +462,11 @@ function callSendApi(NroPhone,NroReq,NroUser,NroAct,NroTab,NroOrg,NroClient,DocN
                 },
                 {
                   "type": "text",
-                  "text": description
+                  "text": Descr
                 },
                 {
                   "type": "text",
-                  "text": monto_base
+                  "text": Amount + ' ' +  Moneda
                 }
 
               ]

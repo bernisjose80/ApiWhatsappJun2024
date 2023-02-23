@@ -1,10 +1,11 @@
 {
   "name": "pugpizza",
   "version": "1.0.0",
-  "description": "bot de messenger para nuestra pizzeria",
+  "description": "bot de messenger para nuestra pizzeria", 
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prod": "set NODE_ENV=prod&& node app.js" ,
+    "test": "set NODE_ENV=test&& node app.js"
   },
   "author": "bernis cardenas <berniscardenas@gmail.com>",
   "license": "MIT",

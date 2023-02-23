@@ -1,4 +1,19 @@
 require('dotenv').config();
+//const dotenv = require('dotenv');
+//const path = require('path');
+//let ruta = '';
+//let Nuevaruta = '';
+
+//ruta = (__dirname);
+//Nuevaruta = ruta.replace("\config", "");
+//console.log(Nuevaruta);
+
+
+//dotenv.config({
+   
+    //path: path.resolve(Nuevaruta, process.env.NODE_ENV + '.env')
+    
+ // });
 
 const config = {
     env: process.env.NODE_ENV || 'dev',
@@ -12,5 +27,6 @@ const config = {
     tokenApp: process.env.TOKEN_APP,
     urlApi: process.env.URL_API 
 }
+
 
 module.exports = { config };
