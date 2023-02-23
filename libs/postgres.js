@@ -17,7 +17,7 @@ async function getConnection() {
     return client;
 
    } else {
-      console.log(config.env);
+      
       const client = new Client({
         host: config.dbHost,
         port: config.dbPort,

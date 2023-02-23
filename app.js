@@ -71,7 +71,7 @@ app.post('/webhook/', async function(req, res){
                
                 status=body_param.entry[0].changes[0].value.statuses[0].status; 
                 wamId=body_param.entry[0].changes[0].value.statuses[0].id;                
-                console.log(status);     
+               // console.log(status);     
                 
                  switch (status) {
                     case 'sent':               
@@ -84,7 +84,7 @@ app.post('/webhook/', async function(req, res){
                     case 'read':
                      
                     case 'delivered':
-                      console.log ('entro delivered')
+                     
                       let [orderId,User,Org,Activity,Client,Table,Doc] = await SelectWam(wamId);
                       if (orderId != 0) {
                         UpdateBotw(orderId, Activity);
@@ -116,7 +116,7 @@ app.post('/webhook/', async function(req, res){
              
               
                if (message === 'Si') {
-                  console.log('Ticket Aprobado'); 
+                  //console.log('Ticket Aprobado'); 
 
                   
                   status = 'approved';
@@ -133,7 +133,7 @@ app.post('/webhook/', async function(req, res){
                  
                   }
                 } else {
-                   console.log('Ticket NO Aprobado');
+                   //console.log('Ticket NO Aprobado');
                    
                    status = 'rejected';
 
@@ -267,7 +267,7 @@ async function UpdateBotw (id_order, ad_wf_activity_id){
   const client = await getConnection();
   
   const rta= await client.query(`Update bot_wsapp set updated= '${FormatFecha()}', processed='${Processed}' where record_id=${id_order} and bot_wsapp_status not in ('approved','rejected') and ad_wf_activity_id=${ad_wf_activity_id}`);
-  console.log(`Update:c_order Numero de filas afectadas: ${rta.rowCount}`);
+ // console.log(`Update:c_order Numero de filas afectadas: ${rta.rowCount}`);
   client.end();
   
 }
@@ -282,7 +282,7 @@ async function InsertBotW (stat,id_order,wamiden,user1_id,ad_wf_acti,ad_table, a
    values(nextval('bot_wsapp_seq') ,'${FormatFecha()}','${FormatFecha()}',100,100, 
   'Y','N',${ad_client},${ad_org},  getuuid(), ${ad_wf_acti}, ${user1_id},
   '${stat}', ${id_order},'${wamiden}','${ad_table}','${docno}')`);
-  console.log(`insert Numero de filas afectadas: ${rta.rowCount}`); 
+  //console.log(`insert Numero de filas afectadas: ${rta.rowCount}`); 
 
   client.end();
 }
@@ -318,7 +318,7 @@ async function Listening(){
     const ResId = 101;
     let SendOn = 0;
 
-    console.log("estoy escuchando la BD");
+    //console.log("estoy escuchando la BD");
 
     const client = await getConnection();
 
@@ -359,7 +359,7 @@ async function Listening(){
   
   ORDER BY 1`);
 
-    console.log(rta.rowCount);
+    //console.log(rta.rowCount);
     if (rta.rowCount > 0) {
       let i = 0;
 
@@ -381,15 +381,15 @@ async function Listening(){
           moneda = rta.rows[i].moneda; 
 
           SendOn = await SelectBd(record_id, ad_wf_activity_id);
-          console.log(SendOn);
+          //console.log(SendOn);
 
           let resent_id = await SelectResent(record_id, ad_wf_activity_id);
 
           if (SendOn === 0 || resent_id > 0) {
-            console.log(rta.rows[i].phone);
-            console.log(documentno);
-            console.log(user);
-            console.log(c_costo);
+            //console.log(rta.rows[i].phone);
+            //console.log(documentno);
+            //console.log(user);
+            //console.log(c_costo);
             monto_base = (new Intl.NumberFormat().format(monto_base));
 
             callSendApi(
@@ -413,7 +413,7 @@ async function Listening(){
         i = i + 1;
       }
     } else {
-      console.log("No se han conseguido registro en la tabla");
+      //console.log("No se han conseguido registro en la tabla");
     }
 
     client.end();
@@ -481,7 +481,7 @@ function callSendApi(NroPhone,NroReq,NroUser,NroAct,NroTab,NroOrg,NroClient,DocN
      // if (error) throw new Error(error);                
           
           try {
-            console.log(response.body); 
+            //console.log(response.body); 
             let data = JSON.parse(response.body);    
             let mssg = (data.messages[0].id);
             let codorder = (NroReq);
