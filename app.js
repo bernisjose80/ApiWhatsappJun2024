@@ -174,7 +174,7 @@ app.listen(app.get('port'), function(){
 
   try {
     
-    setInterval (Listening, 30000);
+    setInterval (Listening, 180000);
 
     console.log('Nuestro servidor esta funcionando en el puerto', app.get('port'));
     
