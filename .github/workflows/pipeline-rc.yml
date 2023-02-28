@@ -1,4 +1,4 @@
-name: Deploy RS for BotWhatsapp
+name: Deploy RC for BotWhatsapp
 
 on:
   push:
