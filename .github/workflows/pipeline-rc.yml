@@ -57,7 +57,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./
-          file: ./Docker/DockerFile
+          file: ./Docker/DockerFile-test
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           # (GITLAB)
