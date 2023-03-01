@@ -10,4 +10,4 @@ COPY ./ /app
 
 EXPOSE 5000
 
-CMD [ "node", "prod.js" ]
+CMD [ "npm", "prod" ]
