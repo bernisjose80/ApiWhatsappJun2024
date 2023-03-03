@@ -10,4 +10,6 @@ COPY ./ /app
 
 EXPOSE 5000
 
-CMD [ "npm", "prod" ]
+CMD [ "npm", "run", "prod" ]
+
+
