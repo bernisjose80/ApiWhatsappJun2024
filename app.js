@@ -360,7 +360,7 @@ async function Listening(){
   
   ORDER BY 1`);
 
-    //console.log(rta.rowCount);
+   console.log('Documentos en procesos: '+rta.rowCount);
     if (rta.rowCount > 0) {
       let i = 0;
 
@@ -382,20 +382,20 @@ async function Listening(){
           description = description.split("\n").join("");          
           description = description.substring(0,80);          
           moneda = rta.rows[i].moneda; 
-
+          //console.log(documentno);
           SendOn = await SelectBd(record_id, ad_wf_activity_id);
           //console.log(SendOn);
 
           let resent_id = await SelectResent(record_id, ad_wf_activity_id);
 
           if (SendOn === 0 || resent_id > 0) {
-           // console.log(rta.rows[i].phone);
+            //console.log(rta.rows[i].phone);
             //console.log(documentno);
-           // console.log(user);
+            //console.log(user);
            // console.log(c_costo);
             //console.log(description);
             
-           // console.log(moneda);
+            //console.log(moneda);
             monto_base = (new Intl.NumberFormat().format(monto_base));
             //console.log(monto_base);
 
@@ -414,13 +414,15 @@ async function Listening(){
               description,
               moneda
             );
+          } else {
+            //console.log("Consiguio pero no envio");
           }
         }
 
         i = i + 1;
       }
     } else {
-      //console.log("No se han conseguido registro en la tabla");
+      console.log("No se han conseguido registro en la tabla");
     }
 
     client.end();
@@ -488,7 +490,7 @@ function callSendApi(NroPhone,NroReq,NroUser,NroAct,NroTab,NroOrg,NroClient,DocN
      // if (error) throw new Error(error);                
           
           try {
-           // console.log(response.body); 
+           //console.log(response.body); 
             let data = JSON.parse(response.body);    
             let mssg = (data.messages[0].id);
             let codorder = (NroReq);
