@@ -4,8 +4,22 @@ const {config } = require('../config/config')
 
 async function getConnection() {
   
-  if (config.env === 'prod') {
+  if (config.env ==='test') {
+
+    const client = new Client({
+      host: config.dbHost,
+      port: config.dbPort,
+      user: config.dbUser,
+      password: config.dbPassword,
+      database: config.dbName    
+    });
+    await client.connect();
+    return client;
     
+    
+
+   } else {
+
     const client = new Client({
       host: 'losroques',
       port: 5434,
@@ -15,19 +29,9 @@ async function getConnection() {
     });  
     await client.connect();
     return client;
-
-   } else {
     
       
-      const client = new Client({
-        host: config.dbHost,
-        port: config.dbPort,
-        user: config.dbUser,
-        password: config.dbPassword,
-        database: config.dbName    
-      });
-      await client.connect();
-      return client;
+      
     }
     
     
