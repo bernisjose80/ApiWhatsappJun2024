@@ -87,7 +87,8 @@ app.post('/webhook/', async function(req, res){
                      
                       let [orderId,User,Org,Activity,Client,Table,Doc] = await SelectWam(wamId);
                       if (orderId != 0) {
-                        UpdateBotw(orderId, Activity);
+                        const updatedby = 101;
+                        UpdateBotw(orderId, Activity,updatedby);
 
                         InsertBotW(status,orderId,wamId,User,Activity,Table,Org,Client,Doc);
                         
@@ -123,7 +124,8 @@ app.post('/webhook/', async function(req, res){
                   let [SiWam,User,Org,Activity,Client,Table,Doc] = await SelectWam(wamId);
 
                   if (SiWam != 0) {
-                    UpdateBotw(SiWam, Activity);
+                    const updatedby = 102;
+                    UpdateBotw(SiWam, Activity,updatedby);
 
                     
                     let record_id = await SelectApprovedOrRejected(SiWam, Activity);
@@ -134,12 +136,12 @@ app.post('/webhook/', async function(req, res){
                   }
                 } else {
                    //console.log('Ticket NO Aprobado');
-                   
+                   const updatedby = 103;
                    status = 'rejected';
 
                    let [SiWam,User,Org,Activity,Client,Table,Doc] = await SelectWam(wamId);                
                   if (SiWam != 0) {
-                    UpdateBotw(SiWam, Activity);
+                    UpdateBotw(SiWam, Activity,updatedby);
                     
                     let record_id = await SelectApprovedOrRejected(SiWam, Activity);
                     if(record_id === 0)
@@ -262,11 +264,11 @@ async function SelectWam(IdWam){  // revisa por el codigo Id mssg de whatsapp, s
    return [NumR,NumUs,NumOrg,NumAct,NumClient,NumTable,Document];  
 
  }
-async function UpdateBotw (id_order, ad_wf_activity_id){
+async function UpdateBotw (id_order, ad_wf_activity_id,updatedby){
   const Processed ='Y';
   const client = await getConnection();
   
-  const rta= await client.query(`Update bot_wsapp set updated= '${FormatFecha()}', processed='${Processed}' where record_id=${id_order} and bot_wsapp_status not in ('approved','rejected') and ad_wf_activity_id=${ad_wf_activity_id}`);
+  const rta= await client.query(`Update bot_wsapp set updated= '${FormatFecha()}', updatedby=${updatedby}, processed='${Processed}' where record_id=${id_order} and bot_wsapp_status not in ('approved','rejected') and processed='N' and ad_wf_activity_id=${ad_wf_activity_id}`);
  // console.log(`Update:c_order Numero de filas afectadas: ${rta.rowCount}`);
   client.end();
   
@@ -491,11 +493,12 @@ function callSendApi(NroPhone,NroReq,NroUser,NroAct,NroTab,NroOrg,NroClient,DocN
           
           try {
            //console.log(response.body); 
+            const updatedby = 104;
             let data = JSON.parse(response.body);    
             let mssg = (data.messages[0].id);
             let codorder = (NroReq);
             const estado = 'sent';
-            UpdateBotw(codorder, NroAct);
+            UpdateBotw(codorder, NroAct,updatedby);
             InsertBotW(estado,codorder,mssg,NroUser,NroAct,NroTab,NroOrg,NroClient,DocNo);
 
           } catch (error) {
