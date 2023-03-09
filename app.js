@@ -203,7 +203,7 @@ function TratarLength(cadena){
 async function SelectBd(IdOrder,ad_wf_activity_id){  // revisa si ya se mando un mensaje al usuario aprobador (no lo puede volver a enviar)
  let NumR = 0;
  const client = await getConnection();   
- const rta= await client.query(`SELECT * FROM bot_wsapp where record_id = ${IdOrder} and isactive='Y' and processed='N' and bot_wsapp_status <>'resent' and ad_wf_activity_id=${ad_wf_activity_id}`); 
+ const rta= await client.query(`SELECT * FROM bot_wsapp where record_id = ${IdOrder} and isactive='Y' and ad_wf_activity_id=${ad_wf_activity_id}`); 
 
  if (rta.rowCount > 0) { 
                
