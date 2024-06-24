@@ -2,9 +2,7 @@ const { Client } = require('pg');
 const {config } = require('../config/config')
 
 
-async function getConnection() {
-  
-  if (config.env ==='test') {
+async function getConnection() {  
 
     const client = new Client({
       host: config.dbHost,
@@ -14,31 +12,7 @@ async function getConnection() {
       database: config.dbName    
     });
     await client.connect();
-    return client;
-    
-    
-
-   } else {
-
-    const client = new Client({
-      host: 'losroques',
-      port: 5434,
-      user: 'adempiere',
-      password: '*ad3mp13r3sf1d4.*',
-      database: 'adempiere'    
-    });  
-    await client.connect();
-    return client;
-    
-      
-      
-    }
-    
-    
-
-  
-
-  
+    return client;   
  
 }
 
